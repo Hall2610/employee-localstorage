@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-function EmployeeForm() {
+function EmployeeForm({ setEmployees }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -8,58 +8,47 @@ function EmployeeForm() {
     department: ''
   });
 
-  const [employees, setEmployees] = useState([]);
-
-  // Load saved employees from localStorage on first render
-  useEffect(() => {
-    const saved = localStorage.getItem('employees');
-    if (saved) {
-      setEmployees(JSON.parse(saved));
-    }
-  }, []);
-
-  // Save to localStorage when employees state updates
-  useEffect(() => {
-    localStorage.setItem('employees', JSON.stringify(employees));
-  }, [employees]);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setEmployees(prev => [...prev, formData]);
+    setEmployees((prev) => [...prev, formData]);
     setFormData({ name: '', email: '', position: '', department: '' });
   };
 
   return (
-    <div>
+    <form onSubmit={handleSubmit}>
       <h2>Employee Form</h2>
-      <form onSubmit={handleSubmit}>
-        <input name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
-        <input name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
-        <input name="position" placeholder="Position" value={formData.position} onChange={handleChange} required />
-        <input name="department" placeholder="Department" value={formData.department} onChange={handleChange} required />
-        <button type="submit">Add Employee</button>
-      </form>
-
-      <h3>Stored Employees</h3>
-      <ul>
-        {employees.map((emp, index) => (
-          <li key={index}>
-            {emp.name} - {emp.email} - {emp.position} - {emp.department}
-          </li>
-        ))}
-      </ul>
-    </div>
+      <input
+        name="name"
+        placeholder="Name"
+        value={formData.name}
+        onChange={handleChange}
+      />
+      <input
+        name="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={handleChange}
+      />
+      <input
+        name="position"
+        placeholder="Position"
+        value={formData.position}
+        onChange={handleChange}
+      />
+      <input
+        name="department"
+        placeholder="Department"
+        value={formData.department}
+        onChange={handleChange}
+      />
+      <button type="submit">Add Employee</button>
+    </form>
   );
 }
 
 export default EmployeeForm;
-
-

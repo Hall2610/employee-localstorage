@@ -1,19 +1,27 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { EmployeeContext } from '../EmployeeContext';
 
-function EmployeeList({ employees }) {
+function EmployeeList() {
+  const { employees, clearEmployees } = useContext(EmployeeContext);
+
   return (
-    <div>
+    <div className="list-container">
       <h2>Employee List</h2>
       {employees.length === 0 ? (
-        <p>No employees added yet.</p>
+        <p>No employees found.</p>
       ) : (
-        <ul>
-          {employees.map((emp, index) => (
-            <li key={index}>
-              {emp.name} – {emp.email} – {emp.position} – {emp.department}
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="employee-list">
+            {employees.map((emp, index) => (
+              <li key={index}>
+                <strong>{emp.name}</strong> — {emp.position}, {emp.department} ({emp.email})
+              </li>
+            ))}
+          </ul>
+          <button className="clear-button" onClick={clearEmployees}>
+            Clear All Employees
+          </button>
+        </>
       )}
     </div>
   );

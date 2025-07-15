@@ -1,53 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
+import { EmployeeContext } from '../EmployeeContext';
 
-function EmployeeForm({ setEmployees }) {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    position: '',
-    department: ''
-  });
+function EmployeeForm() {
+  const { addEmployee } = useContext(EmployeeContext);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [position, setPosition] = useState('');
+  const [department, setDepartment] = useState('');
+  const [message, setMessage] = useState('');
+
+  const nameInputRef = useRef(null);
+
+  useEffect(() => {
+    nameInputRef.current.focus();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setEmployees((prev) => [...prev, formData]);
-    setFormData({ name: '', email: '', position: '', department: '' });
+
+    const newEmployee = {
+      name,
+      email,
+      position,
+      department,
+    };
+
+    addEmployee(newEmployee);
+    setMessage('Employee added successfully!');
+
+    setName('');
+    setEmail('');
+    setPosition('');
+    setDepartment('');
+
+    setTimeout(() => {
+      setMessage('');
+    }, 3000);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Employee Form</h2>
-      <input
-        name="name"
-        placeholder="Name"
-        value={formData.name}
-        onChange={handleChange}
-      />
-      <input
-        name="email"
-        placeholder="Email"
-        value={formData.email}
-        onChange={handleChange}
-      />
-      <input
-        name="position"
-        placeholder="Position"
-        value={formData.position}
-        onChange={handleChange}
-      />
-      <input
-        name="department"
-        placeholder="Department"
-        value={formData.department}
-        onChange={handleChange}
-      />
-      <button type="submit">Add Employee</button>
-    </form>
+    <div className="form-container">
+      <h2>Add New Employee</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          ref={nameInputRef}
+          type="text"
+          placeholder="Full Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+        <input
+          type="email"
+          placeholder="Email Address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Position"
+          value={position}
+          onChange={(e) => setPosition(e.target.value)}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Department"
+          value={department}
+          onChange={(e) => setDepartment(e.target.value)}
+          required
+        />
+        <button type="submit">Add Employee</button>
+      </form>
+      {message && <p className="success">{message}</p>}
+    </div>
   );
 }
 
